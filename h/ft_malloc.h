@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:25:57 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/19 23:13:31 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/19 23:41:09 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 
 # define TINY_MIN		(1)
 # define TINY_MAX		(128)
-# define TINY_SIZE		((TINY_MAX + 1) * 100)
+# define TINY_SIZE		((TINY_MAX + sizeof(t_malloc) + 1) * 100)
 
 # define SMALL_MIN		(TINY_MIN + 1)
-# define SMALL_MAX		(32000)
-# define SMALL_SIZE		((SMALL_MAX + 1) * 100)
+# define SMALL_MAX		(16000)
+# define SMALL_SIZE		((SMALL_MAX + sizeof(t_malloc) + 1) * 100)
 
 # define LARGE_MIN		(SMALL_MAX + 1)
 
@@ -46,14 +46,12 @@ typedef struct	s_zone
 
 typedef struct	s_env
 {
-	void			*null;
 	t_zone			tiny;
 	t_zone			small;
 	t_malloc		*large;
 }				t_env;
 
-export t_env	g_env = {
-	NULL,
+t_env			g_env = {
 	(t_zone){NULL, NULL, NULL},
 	(t_zone){NULL, NULL, NULL},
 	NULL

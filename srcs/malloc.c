@@ -6,44 +6,47 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:23:31 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/19 23:16:03 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/19 23:44:32 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-static void		*malloc_zone(t_zone *zone, size_t size)
+extern t_env	g_env;
+
+static void		*malloc_zone(t_zone *zone, int size)
 {
 	t_malloc		*tmp;
 	t_malloc		*i;
 
-	if (zone->first == NULL || (zone->first - zone->min) >= size)
+	if (zone->first == NULL || ((void*)zone->first - zone->min) >= size)
 	{
 		tmp = (t_malloc*)(zone->min);
-		*tmp = (t_malloc){zone->min + sizeof(t_malloc), size, zone->first};
+		*tmp = (t_malloc){(void*)zone->min + sizeof(t_malloc), size, zone->first};
 		return (tmp->ptr);
 	}
 	i = zone->first;
-	while (i != NULL)
+	while (i->next != NULL)
 	{
-		if ((i + i->length + size) < i->next)
+		if (((void*)i + i->length + size) < (void*)i->next)
 		{
-			tmp = (t_malloc*)(i + i->length);
-			*tmp = (t_malloc){i + i->length + sizeof(t_malloc), size, i->next};
-			i->next = tmp;
-			return (tmp->ptr);
+			tmp = (t_malloc*)((void*)i + i->length);
+			*tmp = (t_malloc){(void*)i + i->length + sizeof(t_malloc), size, i->next};
+			return ((i->next = tmp), tmp->ptr);
 		}
 		i = i->next;
 	}
-	return (NULL); // Not enougth space in zone
+	if (((void*)i + i->length + size) > zone->max)
+		return (NULL);
+	tmp = (t_malloc*)((void*)i + i->length);
+	*tmp = (t_malloc){(void*)i + i->length + sizeof(t_malloc), size, i->next};
+	return ((i->next = tmp), tmp->ptr);
 }
 
 void			*malloc(size_t size)
 {
 	void			*ptr;
 
-	if (size == 0)
-		return (g_env.null);
 	ptr = NULL;
 	size += sizeof(t_malloc);
 	if (size <= TINY_MAX && (ptr = malloc_zone(&(g_env.tiny), size)) != NULL)
