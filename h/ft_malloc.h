@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:25:57 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/19 21:31:01 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/19 23:13:31 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,39 @@
 # define SMALL_SIZE		((SMALL_MAX + 1) * 100)
 
 # define LARGE_MIN		(SMALL_MAX + 1)
+
+/*
+** 'ptr' the malloc
+** 'length' the size of the malloc + sizeof(t_malloc)
+** 'next' the next malloc
+*/
+typedef struct	s_malloc
+{
+	void			*ptr;
+	size_t			length;
+	struct s_malloc	*next;
+}				t_malloc;
+
+typedef struct	s_zone
+{
+	void			*min;
+	void			*max;
+	t_malloc		*first;
+}				t_zone;
+
+typedef struct	s_env
+{
+	void			*null;
+	t_zone			tiny;
+	t_zone			small;
+	t_malloc		*large;
+}				t_env;
+
+export t_env	g_env = {
+	NULL,
+	(t_zone){NULL, NULL, NULL},
+	(t_zone){NULL, NULL, NULL},
+	NULL
+};
 
 #endif
