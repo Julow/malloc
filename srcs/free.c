@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:24:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/19 23:41:58 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 12:48:12 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int		free_zone(void *ptr, t_zone *zone)
 	t_malloc		*tmp;
 	t_malloc		*last;
 
-	if (ptr < zone->min || ptr > zone->max)
+	if (ptr < zone->start || ptr > (zone->start + zone->size))
 		return (0);
 	last = zone->first;
 	if (last->ptr == ptr)

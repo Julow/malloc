@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:25:57 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/19 23:41:09 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 13:22:20 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,16 @@
 
 # define TINY_MIN		(1)
 # define TINY_MAX		(128)
-# define TINY_SIZE		((TINY_MAX + sizeof(t_malloc) + 1) * 100)
+# define TINY_SIZE		((TINY_MAX + sizeof(t_malloc)) * 100)
 
 # define SMALL_MIN		(TINY_MIN + 1)
-# define SMALL_MAX		(16000)
-# define SMALL_SIZE		((SMALL_MAX + sizeof(t_malloc) + 1) * 100)
+# define SMALL_MAX		(8192)
+# define SMALL_SIZE		((SMALL_MAX + sizeof(t_malloc)) * 100)
 
 # define LARGE_MIN		(SMALL_MAX + 1)
+
+# define MMAP_PROT		PROT_READ | PROT_WRITE
+# define MMAP_FLAG		MAP_ANON | MAP_PRIVATE
 
 /*
 ** 'ptr' the malloc
@@ -39,9 +42,9 @@ typedef struct	s_malloc
 
 typedef struct	s_zone
 {
-	void			*min;
-	void			*max;
+	void			*start;
 	t_malloc		*first;
+	size_t			size;
 }				t_zone;
 
 typedef struct	s_env
@@ -52,8 +55,8 @@ typedef struct	s_env
 }				t_env;
 
 t_env			g_env = {
-	(t_zone){NULL, NULL, NULL},
-	(t_zone){NULL, NULL, NULL},
+	(t_zone){NULL, NULL, TINY_SIZE},
+	(t_zone){NULL, NULL, SMALL_SIZE},
 	NULL
 };
 
