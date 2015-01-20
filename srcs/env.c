@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stdlib.h                                           :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/01/19 21:11:02 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 13:29:33 by jaguillo         ###   ########.fr       */
+/*   Created: 2015/01/20 15:49:16 by jaguillo          #+#    #+#             */
+/*   Updated: 2015/01/20 17:05:43 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STDLIB_H
-# define STDLIB_H
+#include "ft_malloc.h"
+#include <unistd.h>
 
-# include <stddef.h>
+t_env			g_env = {
+	ZONE(TINY_SIZE),
+	ZONE(SMALL_SIZE),
+	ZONE(0)
+};
 
-void			free(void *ptr);
-void			*malloc(size_t size);
-void			*realloc(void *ptr, size_t size);
+size_t			page_round(size_t size)
+{
+	const int		page = getpagesize();
 
-void			show_alloc_mem(void);
-
-#endif
+	return ((size + page - 1) * page / page);
+}

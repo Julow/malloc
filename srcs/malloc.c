@@ -6,19 +6,12 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:23:31 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 14:39:17 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 17:06:25 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
-#include <unistd.h>
 #include <sys/mman.h>
-
-t_env			g_env = {
-	(t_zone){NULL, NULL, TINY_SIZE},
-	(t_zone){NULL, NULL, SMALL_SIZE},
-	(t_zone){NULL, NULL, 0}
-};
 
 static void		*malloc_zone(t_zone *zone, int size)
 {
@@ -26,14 +19,14 @@ static void		*malloc_zone(t_zone *zone, int size)
 	t_malloc		*i;
 
 	if (zone->start == NULL)
-		zone->start = mmap(NULL, zone->size, MMAP_PROT, MMAP_FLAG, 0, 0);
+		zone->start = mmap(NULL, page_round(zone->size), MMAP_PROT, MMAP_FLAG, 0, 0);
 	if (zone->start == MAP_FAILED)
 		return (NULL);
 	if (zone->first == NULL || ((void*)zone->first - zone->start) >= size)
 	{
 		tmp = (t_malloc*)(zone->start);
-		*tmp = (t_malloc){(void*)tmp + sizeof(t_malloc), size, zone->first};
-		return (tmp->ptr);
+		*tmp = MALLOC(tmp, size, zone->first);
+		return ((zone->first = tmp), tmp->ptr);
 	}
 	i = zone->first;
 	while (i->next != NULL)
@@ -41,7 +34,7 @@ static void		*malloc_zone(t_zone *zone, int size)
 		if (((void*)i + i->length + size) < (void*)i->next)
 		{
 			tmp = (t_malloc*)((void*)i + i->length);
-			*tmp = (t_malloc){(void*)tmp + sizeof(t_malloc), size, i->next};
+			*tmp = MALLOC(tmp, size, i->next);
 			return ((i->next = tmp), tmp->ptr);
 		}
 		i = i->next;
@@ -49,26 +42,25 @@ static void		*malloc_zone(t_zone *zone, int size)
 	if (((void*)i + i->length + size) > (zone->start + zone->size))
 		return (NULL);
 	tmp = (t_malloc*)((void*)i + i->length);
-	*tmp = (t_malloc){(void*)tmp + sizeof(t_malloc), size, i->next};
+	*tmp = MALLOC(tmp, size, i->next);
 	return ((i->next = tmp), tmp->ptr);
 }
 
 void			*malloc(size_t size)
 {
 	extern t_env	g_env;
-	const int		page = getpagesize();
 	void			*ptr;
 
 	ptr = NULL;
-	size = ((size + sizeof(t_malloc)) + page) / page * page;
+	size += sizeof(t_malloc);
 	if (size <= TINY_MAX && (ptr = malloc_zone(&(g_env.tiny), size)) != NULL)
 		return (ptr);
 	if (size <= SMALL_MAX && (ptr = malloc_zone(&(g_env.small), size)) != NULL)
 		return (ptr);
-	ptr = mmap(NULL, size, MMAP_PROT, MMAP_FLAG, 0, 0);
+	ptr = mmap(NULL, page_round(size), MMAP_PROT, MMAP_FLAG, 0, 0);
 	if (ptr == MAP_FAILED)
 		return (NULL);
-	*((t_malloc*)ptr) = (t_malloc){ptr + sizeof(t_malloc), size, g_env.large.first};
+	*((t_malloc*)ptr) = MALLOC(ptr, size, g_env.large.first);
 	g_env.large.first = ptr;
 	return (ptr);
 }

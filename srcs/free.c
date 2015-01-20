@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:24:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 14:37:43 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 15:43:07 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static int		free_zone(void *ptr, t_zone *zone)
 		last = tmp;
 		tmp = tmp->next;
 	}
-	// Error: Double free
 	return (1);
 }
 
@@ -43,16 +42,15 @@ static int		free_large(void *ptr)
 
 	last = g_env.large.first;
 	if (last->ptr == ptr)
-		return ((g_env.large.first = last->next), munmap(last, last->length), 1);
+		return ((g_env.large.first = last->next), munmap(last, last->length));
 	tmp = last->next;
 	while (tmp != NULL)
 	{
 		if (tmp->ptr == ptr)
-			return ((last->next = tmp->next), munmap(tmp, tmp->length), 1);
+			return ((last->next = tmp->next), munmap(tmp, tmp->length));
 		last = tmp;
 		tmp = tmp->next;
 	}
-	// Error: Never malloc
 	return (0);
 }
 

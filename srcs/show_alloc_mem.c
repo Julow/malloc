@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 13:29:15 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 14:37:35 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 17:08:06 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static int		ft_putexa(t_ulong exa)
 		nb[--i] = base[exa % 16];
 		exa /= 16;
 	}
+	nb[--i] = 'x';
+	nb[--i] = '0';
 	return (write(1, nb + i, 41 - i));
 }
 
@@ -93,8 +95,8 @@ void			show_alloc_mem(void)
 	int				total;
 
 	total = print_zone("TINY", &(g_env.tiny));
-	total += print_zone("SMALL", &(g_env.tiny));
-	total += print_zone("LARGE", &(g_env.tiny));
+	total += print_zone("SMALL", &(g_env.small));
+	total += print_zone("LARGE", &(g_env.large));
 	ft_putstr("Total : ");
 	ft_putnbr(total);
 	ft_putstr(" octets\n");

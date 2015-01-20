@@ -6,14 +6,14 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:25:57 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 14:39:14 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 17:05:24 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
 
-# include "stdlib.h"
+# include <stddef.h>
 
 # define TINY_MIN		(1)
 # define TINY_MAX		(128)
@@ -26,7 +26,11 @@
 # define LARGE_MIN		(SMALL_MAX + 1)
 
 # define MMAP_PROT		PROT_READ | PROT_WRITE
-# define MMAP_FLAG		MAP_ANON | MAP_PRIVATE
+# define MMAP_FLAG		MAP_ANON | MAP_SHARED
+
+# define MALLOC(p,l,n)	((t_malloc){((void*)(p)) + sizeof(t_malloc), (l), (n)})
+
+# define ZONE(s)		((t_zone){NULL, NULL, (s)})
 
 # define TULONG			unsigned long long int
 
@@ -59,5 +63,30 @@ typedef struct	s_env
 	t_zone			small;
 	t_zone			large;
 }				t_env;
+
+/*
+** malloc.c
+*/
+void			*malloc(size_t size);
+
+/*
+** free.c
+*/
+void			free(void *ptr);
+
+/*
+** realloc.c
+*/
+void			*realloc(void *ptr, size_t size);
+
+/*
+** show_alloc_mem.c
+*/
+void			show_alloc_mem(void);
+
+/*
+** env.c
+*/
+size_t			page_round(size_t size);
 
 #endif
