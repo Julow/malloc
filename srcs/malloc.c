@@ -6,14 +6,19 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:23:31 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 13:22:29 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 14:39:17 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
+#include <unistd.h>
 #include <sys/mman.h>
 
-extern t_env	g_env;
+t_env			g_env = {
+	(t_zone){NULL, NULL, TINY_SIZE},
+	(t_zone){NULL, NULL, SMALL_SIZE},
+	(t_zone){NULL, NULL, 0}
+};
 
 static void		*malloc_zone(t_zone *zone, int size)
 {
@@ -50,6 +55,7 @@ static void		*malloc_zone(t_zone *zone, int size)
 
 void			*malloc(size_t size)
 {
+	extern t_env	g_env;
 	const int		page = getpagesize();
 	void			*ptr;
 
@@ -62,7 +68,7 @@ void			*malloc(size_t size)
 	ptr = mmap(NULL, size, MMAP_PROT, MMAP_FLAG, 0, 0);
 	if (ptr == MAP_FAILED)
 		return (NULL);
-	*((t_malloc*)ptr) = (t_malloc){ptr + sizeof(t_malloc), size, g_env.large};
-	g_env.large = ptr;
+	*((t_malloc*)ptr) = (t_malloc){ptr + sizeof(t_malloc), size, g_env.large.first};
+	g_env.large.first = ptr;
 	return (ptr);
 }

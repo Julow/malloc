@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:25:57 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 13:22:20 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 14:39:14 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@
 
 # define MMAP_PROT		PROT_READ | PROT_WRITE
 # define MMAP_FLAG		MAP_ANON | MAP_PRIVATE
+
+# define TULONG			unsigned long long int
+
+typedef TULONG	t_ulong;
+
+# undef TULONG
 
 /*
 ** 'ptr' the malloc
@@ -51,13 +57,7 @@ typedef struct	s_env
 {
 	t_zone			tiny;
 	t_zone			small;
-	t_malloc		*large;
+	t_zone			large;
 }				t_env;
-
-t_env			g_env = {
-	(t_zone){NULL, NULL, TINY_SIZE},
-	(t_zone){NULL, NULL, SMALL_SIZE},
-	NULL
-};
 
 #endif

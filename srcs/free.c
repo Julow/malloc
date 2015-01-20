@@ -6,14 +6,12 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:24:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 12:48:12 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 14:37:43 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 #include <sys/mman.h>
-
-extern t_env	g_env;
 
 static int		free_zone(void *ptr, t_zone *zone)
 {
@@ -39,12 +37,13 @@ static int		free_zone(void *ptr, t_zone *zone)
 
 static int		free_large(void *ptr)
 {
+	extern t_env	g_env;
 	t_malloc		*tmp;
 	t_malloc		*last;
 
-	last = g_env.large;
+	last = g_env.large.first;
 	if (last->ptr == ptr)
-		return ((g_env.large = last->next), munmap(last, last->length), 1);
+		return ((g_env.large.first = last->next), munmap(last, last->length), 1);
 	tmp = last->next;
 	while (tmp != NULL)
 	{
@@ -59,6 +58,8 @@ static int		free_large(void *ptr)
 
 void			free(void *ptr)
 {
+	extern t_env	g_env;
+
 	if (ptr == NULL)
 		return ;
 	if (free_zone(ptr, &(g_env.tiny)) || free_zone(ptr, &(g_env.small)))
