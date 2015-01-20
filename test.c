@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 14:42:30 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 17:48:44 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 18:23:01 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,33 @@ static void		test_size(int size)
 	PRINT("\n");
 	PRINT("bzero (%d)... ", size);
 	bzero(ptr, size);
-	PRINT("\n");
-/*
+	PRINT("\n");/*
 	PRINT("show_alloc_mem...\n");
-	show_alloc_mem();
-*/
+	show_alloc_mem();*/
 	PRINT("free... ");
 	free(ptr);
 	PRINT("\n");
+}
+
+static void		test_test(void)
+{
+	void			*ptr;
+
+	malloc(50);
+	malloc(50);
+	ptr = malloc(50);
+	malloc(50);
+	malloc(50);
+	free(ptr);
+	malloc(50);
+	malloc(250);
+	malloc(250);
+	ptr = malloc(250);
+	malloc(250);
+	malloc(250);
+	free(ptr);
+	malloc(250);/*
+	show_alloc_mem();*/
 }
 
 static void		test_null(void)
@@ -73,14 +92,14 @@ static void		test_show(int size, int loop)
 	PRINT("malloc (%d) x %d... ", size, loop);
 	while (loop > 0)
 	{
-		malloc(size);
+		if (malloc(size) == NULL)
+			printf("return NULL\n");
 		loop--;
 	}
-	PRINT("\n");
-/*
+	PRINT("\n");/*
 	PRINT("show_alloc_mem...\n");
-	show_alloc_mem();
-*/
+	show_alloc_mem();*/
+	while (1);
 }
 
 int				main(int argc, char **argv)
@@ -93,6 +112,8 @@ int				main(int argc, char **argv)
 			test_loop(atoi(argv[2]), atoi(argv[3]));
 		else if (strcmp(argv[1], "show") == 0 && argc > 3)
 			test_show(atoi(argv[2]), atoi(argv[3]));
+		else if (strcmp(argv[1], "test") == 0)
+			test_test();
 		else if (strcmp(argv[1], "null") == 0)
 			test_null();
 		else
@@ -103,6 +124,7 @@ int				main(int argc, char **argv)
 	PRINT("	size [size]\n");
 	PRINT("	loop [size] [loop]\n");
 	PRINT("	show [size] [loop]\n");
+	PRINT("	test\n");
 	PRINT("	null\n");
 	return (1);
 }

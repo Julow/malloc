@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:25:57 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 17:05:24 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 18:01:56 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@
 # define MMAP_PROT		PROT_READ | PROT_WRITE
 # define MMAP_FLAG		MAP_ANON | MAP_SHARED
 
-# define MALLOC(p,l,n)	((t_malloc){((void*)(p)) + sizeof(t_malloc), (l), (n)})
+# define MALLOC(l,n)	((t_malloc){(l), (n)})
+
+# define START(m)		(((void*)m) + sizeof(t_malloc))
 
 # define ZONE(s)		((t_zone){NULL, NULL, (s)})
 
@@ -39,13 +41,11 @@ typedef TULONG	t_ulong;
 # undef TULONG
 
 /*
-** 'ptr' the malloc
 ** 'length' the size of the malloc + sizeof(t_malloc)
 ** 'next' the next malloc
 */
 typedef struct	s_malloc
 {
-	void			*ptr;
 	size_t			length;
 	struct s_malloc	*next;
 }				t_malloc;

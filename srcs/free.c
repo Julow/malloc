@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:24:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 15:43:07 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 17:59:33 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ static int		free_zone(void *ptr, t_zone *zone)
 	if (ptr < zone->start || ptr > (zone->start + zone->size))
 		return (0);
 	last = zone->first;
-	if (last->ptr == ptr)
+	if ((void*)last == ptr)
 		return ((zone->first = last->next), 1);
 	tmp = last->next;
 	while (tmp != NULL)
 	{
-		if (tmp->ptr == ptr)
+		if ((void*)tmp == ptr)
 			return ((last->next = tmp->next), 1);
 		last = tmp;
 		tmp = tmp->next;
@@ -41,12 +41,12 @@ static int		free_large(void *ptr)
 	t_malloc		*last;
 
 	last = g_env.large.first;
-	if (last->ptr == ptr)
+	if ((void*)last == ptr)
 		return ((g_env.large.first = last->next), munmap(last, last->length));
 	tmp = last->next;
 	while (tmp != NULL)
 	{
-		if (tmp->ptr == ptr)
+		if ((void*)tmp == ptr)
 			return ((last->next = tmp->next), munmap(tmp, tmp->length));
 		last = tmp;
 		tmp = tmp->next;
@@ -60,6 +60,7 @@ void			free(void *ptr)
 
 	if (ptr == NULL)
 		return ;
+	ptr -= sizeof(t_malloc);
 	if (free_zone(ptr, &(g_env.tiny)) || free_zone(ptr, &(g_env.small)))
 		return ;
 	free_large(ptr);

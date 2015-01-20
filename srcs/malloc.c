@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/19 21:23:31 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 17:06:25 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/01/20 18:02:13 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ static void		*malloc_zone(t_zone *zone, int size)
 	if (zone->first == NULL || ((void*)zone->first - zone->start) >= size)
 	{
 		tmp = (t_malloc*)(zone->start);
-		*tmp = MALLOC(tmp, size, zone->first);
-		return ((zone->first = tmp), tmp->ptr);
+		*tmp = MALLOC(size, zone->first);
+		return ((zone->first = tmp), START(tmp));
 	}
 	i = zone->first;
 	while (i->next != NULL)
@@ -34,16 +34,16 @@ static void		*malloc_zone(t_zone *zone, int size)
 		if (((void*)i + i->length + size) < (void*)i->next)
 		{
 			tmp = (t_malloc*)((void*)i + i->length);
-			*tmp = MALLOC(tmp, size, i->next);
-			return ((i->next = tmp), tmp->ptr);
+			*tmp = MALLOC(size, i->next);
+			return ((i->next = tmp), START(tmp));
 		}
 		i = i->next;
 	}
 	if (((void*)i + i->length + size) > (zone->start + zone->size))
 		return (NULL);
 	tmp = (t_malloc*)((void*)i + i->length);
-	*tmp = MALLOC(tmp, size, i->next);
-	return ((i->next = tmp), tmp->ptr);
+	*tmp = MALLOC(size, i->next);
+	return ((i->next = tmp), START(tmp));
 }
 
 void			*malloc(size_t size)
@@ -60,7 +60,7 @@ void			*malloc(size_t size)
 	ptr = mmap(NULL, page_round(size), MMAP_PROT, MMAP_FLAG, 0, 0);
 	if (ptr == MAP_FAILED)
 		return (NULL);
-	*((t_malloc*)ptr) = MALLOC(ptr, size, g_env.large.first);
+	*((t_malloc*)ptr) = MALLOC(size, g_env.large.first);
 	g_env.large.first = ptr;
 	return (ptr);
 }
