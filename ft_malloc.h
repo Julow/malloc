@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/09 18:09:16 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/09 23:00:46 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,38 +16,44 @@
 # include <stddef.h>
 
 # define TINY_MIN			(1)
-# define TINY_MAX			(256)
+# define TINY_MAX			(192 + sizeof(t_alloc))
+# define TINY_CHUNK			(4096)
 
 # define SMALL_MIN			(TINY_MIN + 1)
-# define SMALL_MAX			(8192)
+# define SMALL_MAX			(8192 + sizeof(t_alloc))
+# define SMALL_CHUNK		(TINY_CHUNK * 8)
 
 # define LARGE_MIN			(SMALL_MAX + 1)
 # define LARGE_MAX			((unsigned int)-1)
+# define LARGE_CHUNK		(SMALL_CHUNK * 2)
 
-# define CHUNK_PER_ZONE		10
-
-# define ALLOC_PER_CHUNK	10
-
-# define ARRAY(l,v)			{[0 ... ((l) - 1)] = v}
+/*
+** libft?
+** # define ARRAY(l,v)			{[0 ... ((l) - 1)] = v}
+*/
 
 typedef struct	s_alloc
 {
+	int				nothing;
 	size_t			size;
-	void			*ptr;
+	struct s_alloc	*next;
 }				t_alloc;
 
 typedef struct	s_chunk
 {
 	void			*start;
 	size_t			size;
-	t_alloc			allocs[ALLOC_PER_CHUNK];
+	size_t			free;
+	t_alloc			*first;
+	struct s_chunk	*next;
 }				t_chunk;
 
 typedef struct	s_zone
 {
 	size_t			min;
 	size_t			max;
-	t_chunk			chunks[CHUNK_PER_ZONE];
+	size_t			chunk_size;
+	t_chunk			*chunk;
 }				t_zone;
 
 typedef struct	s_env

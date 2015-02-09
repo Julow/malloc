@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 14:42:30 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/01/20 18:23:01 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/09 22:55:21 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ static void		test_show(int size, int loop)
 
 int				main(int argc, char **argv)
 {
+	printf("Page size: %d\n", getpagesize());
 	while (argc > 1)
 	{
 		if (strcmp(argv[1], "size") == 0 && argc > 2)
