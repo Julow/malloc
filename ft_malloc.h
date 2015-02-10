@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 20:22:43 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 21:29:47 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,18 @@
 /*
 ** libft?
 ** # define ARRAY(l,v)			{[0 ... ((l) - 1)] = v}
-** # define MASK(f,m)			((m) == ((f) & (m)))
-** # define ISBIT(f,b)			(((f) & (1 << (b))) != 0)
-** # define BIT(b)				(1 << (b))
 */
+# define MASK(f,m)			((m) == ((f) & (m)))
+# define ISBIT(f,b)			(((f) & (1 << (b))) != 0)
+# define BIT(b)				(1 << (b))
+
 # define V(p)				((void*)(p))
 
 # define WORD(n)			(((n) + 3) / 4 * 4)
+
+# define TULONG				unsigned long long int
+typedef TULONG	t_ulong;
+# undef TULONG
 
 /*
 ** Before each allocs
@@ -102,14 +107,32 @@ typedef struct	s_freed
 	t_zone			*zone;
 }				t_freed;
 
+/*
+** internal functions
+*/
 void			search_freed(t_freed *res, size_t size);
 
 size_t			ft_umax(size_t a, size_t b);
 size_t			page_round(size_t size);
 
+int				ft_putstr(const char *str);
+int				ft_putulong(unsigned long long int n);
+int				ft_putexa(unsigned long long int exa);
+
+/*
+** public functions
+*/
 void			*malloc(size_t size);
-void			free(void *ptr);
 void			*realloc(void *ptr, size_t size);
+void			free(void *ptr);
+
+# define DEBUG_CHUNK		BIT(0)
+# define DEBUG_FLAGS		BIT(1) // TODO
+# define DEBUG_INFO			BIT(2)
+# define DEBUG_FREE			(BIT(3) | DEBUG_CHUNK)
+# define DEBUG_ALL			(-1)
+
+void			show_alloc_debug(int flags);
 void			show_alloc_mem(void);
 
 #endif

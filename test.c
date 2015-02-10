@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 14:42:30 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 21:01:44 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 21:23:00 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static void		test_test(void)
 	malloc(250);
 	malloc(250);
 	free(ptr);
-	malloc(250);/*
-	show_alloc_mem();*/
+	malloc(250);
+	show_alloc_mem();
 }
 
 static void		test_null(void)

@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 18:04:32 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 20:10:53 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 21:25:44 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #define PUTNBR_BUFF		41
 
-int				ft_putstr(char *str)
+int				ft_putstr(const char *str)
 {
 	int				len;
 
@@ -25,7 +25,7 @@ int				ft_putstr(char *str)
 	return (write(1, str, len));
 }
 
-int				ft_putulong(unsigned long long int n)
+int				ft_putulong(t_ulong n)
 {
 	char			nb[PUTNBR_BUFF];
 	size_t			i;
@@ -39,14 +39,14 @@ int				ft_putulong(unsigned long long int n)
 	return (write(1, nb + i, PUTNBR_BUFF - i));
 }
 
-int				ft_putexa(unsigned long long int exa)
+int				ft_putexa(t_ulong exa)
 {
 	const char		*base = "0123456789ABCDEF";
 	char			nb[PUTNBR_BUFF];
 	size_t			i;
 
 	if (exa == 0)
-		return (ft_putstr("EMPTY"));
+		return (ft_putstr("NULL"));
 	i = PUTNBR_BUFF;
 	while (exa > 0)
 	{
