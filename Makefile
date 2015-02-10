@@ -6,7 +6,7 @@
 #    By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/01/20 14:01:05 by jaguillo          #+#    #+#              #
-#    Updated: 2015/01/27 10:35:30 by jaguillo         ###   ########.fr        #
+#    Updated: 2015/02/10 20:52:51 by jaguillo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,11 +17,13 @@ endif
 NAME = libft_malloc_$(HOSTTYPE).so
 LINK = libft_malloc.so
 
+TEST = test
+
 H_DIR = .
 C_DIR = srcs
 O_DIR = o
 
-FLAGS = -Wall -Wextra -Werror -O2
+FLAGS = -Wall -Wextra -Werror -O2 -fPIC
 DEBUG = 0
 
 C_FILES = $(shell find $(C_DIR) -type f -print | grep "\.c")
@@ -36,7 +38,7 @@ all:
 		make -j4 $(NAME); fi
 
 $(NAME): $(O_FILES)
-	@gcc $(FLAGS) -shared -fPIC -o $@ $^ && printf "\033[0;32m" || printf "\033[0;31m"
+	@gcc $(FLAGS) -shared -o $@ $^ && printf "\033[0;32m" || printf "\033[0;31m"
 	@printf "%-34s \033[1;30m<<--\033[0;0m\n" "$@"
 	@ln -s $@ $(LINK)
 
@@ -54,14 +56,18 @@ clean:
 	@rmdir $(O_DIRS) $(O_DIR) 2> /dev/null || echo "" > /dev/null
 
 fclean: clean
-	@rm $(NAME) $(LINK) 2> /dev/null || echo "" > /dev/null
+	@rm $(NAME) $(TEST) $(LINK) 2> /dev/null || echo "" > /dev/null
 
 re: fclean all
 
 rebug: fclean debug
 
+$(TEST): all
+	@gcc test.c $(O_FILES) -g -o $@ && printf "\033[0;32m" || printf "\033[0;31m"
+	@printf "%-34s \033[1;30m<<--\033[0;0m\n" "$@"
+
 _debug:
-	$(eval FLAGS = -Wall -Wextra -g -D DEBUG_MODE)
+	$(eval FLAGS = -Wall -Wextra -fPIC -g -D DEBUG_MODE)
 	$(eval DEBUG = 1)
 
 .PHONY: all debug clean fclean re rebug _debug

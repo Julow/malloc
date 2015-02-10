@@ -6,11 +6,11 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 14:42:30 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/09 22:55:21 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 21:01:44 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "ft_malloc.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -25,9 +25,9 @@ static void		test_size(int size)
 	PRINT("\n");
 	PRINT("bzero (%d)... ", size);
 	bzero(ptr, size);
-	PRINT("\n");/*
+	PRINT("\n");
 	PRINT("show_alloc_mem...\n");
-	show_alloc_mem();*/
+	show_alloc_mem();
 	PRINT("free... ");
 	free(ptr);
 	PRINT("\n");
@@ -93,18 +93,16 @@ static void		test_show(int size, int loop)
 	while (loop > 0)
 	{
 		if (malloc(size) == NULL)
-			printf("return NULL\n");
+			printf("\nreturn NULL");
 		loop--;
 	}
 	PRINT("\n");/*
 	PRINT("show_alloc_mem...\n");
 	show_alloc_mem();*/
-	while (1);
 }
 
 int				main(int argc, char **argv)
 {
-	printf("Page size: %d\n", getpagesize());
 	while (argc > 1)
 	{
 		if (strcmp(argv[1], "size") == 0 && argc > 2)

@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:19:07 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 15:12:21 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 20:09:56 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void			*malloc(size_t size)
 
 	if (size > MAX_SIZE)
 		return (NULL);
-	size = (size + sizeof(t_alloc) + 3) / 4 * 4;
-	search_mem(&freed, size + sizeof(t_alloc));
-	if (!ISBIT(freed.flags, 0))
-		return (NULL);
+	size = WORD(size + sizeof(t_alloc));
+	search_freed(&freed, size);
+	if (freed.alloc != NULL)
+		return (V(freed.alloc) + sizeof(t_alloc));
 	return (NULL);
 }
