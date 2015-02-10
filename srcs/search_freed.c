@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 13:12:11 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 20:59:21 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 23:29:07 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,21 @@ static int		chunk_search(t_freed *res, size_t size)
 	return (0);
 }
 
+static void		chunk_add(t_zone *zone, t_chunk *chunk)
+{
+	t_chunk			*tmp;
+
+	tmp = zone->chunk;
+	if (tmp == NULL)
+	{
+		zone->chunk = chunk;
+		return ;
+	}
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+	tmp->next = chunk;
+}
+
 static int		chunk_create(t_freed *res, size_t size)
 {
 	extern t_env	g_env;
@@ -57,7 +72,15 @@ static int		chunk_create(t_freed *res, size_t size)
 		MMAP_PROT, MMAP_FLAG, -1, 0)) == MAP_FAILED)
 		g_env.last_map = NULL;
 	if ((res->chunk = g_env.last_map) != NULL)
+	{
+		res->chunk->start = V(res->chunk) + sizeof(t_chunk);
+		res->chunk->size = V(res->chunk) + chunk_size - res->chunk->start;
+		res->chunk->free = res->chunk->size;
+		res->chunk->first = NULL;
+		res->chunk->next = NULL;
+		chunk_add(res->zone, res->chunk);
 		chunk_search(res, size);
+	}
 	return (1);
 }
 

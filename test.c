@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 14:42:30 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 21:23:00 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 23:13:25 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,32 @@ static void		test_test(void)
 {
 	void			*ptr;
 
-	malloc(50);
-	malloc(50);
-	ptr = malloc(50);
-	malloc(50);
-	malloc(50);
+	if ((malloc(50)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(50)) == NULL)
+		PRINT("(null)\n");
+	if ((ptr = malloc(50)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(50)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(50)) == NULL)
+		PRINT("(null)\n");
 	free(ptr);
-	malloc(50);
-	malloc(250);
-	malloc(250);
-	ptr = malloc(250);
-	malloc(250);
-	malloc(250);
+	if ((malloc(50)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(250)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(250)) == NULL)
+		PRINT("(null)\n");
+	if ((ptr = malloc(250)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(250)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(250)) == NULL)
+		PRINT("(null)\n");
 	free(ptr);
-	malloc(250);
+	if ((malloc(250)) == NULL)
+		PRINT("(null)\n");
 	show_alloc_mem();
 }
 
@@ -59,7 +71,8 @@ static void		test_null(void)
 	void			*ptr;
 
 	PRINT("malloc(0)... ");
-	ptr = malloc(0);
+	if ((ptr = malloc(0)) == NULL)
+		PRINT("(null)");
 	PRINT("\n");
 	PRINT("free(malloc(0))... ");
 	ptr = malloc(0);

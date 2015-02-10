@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 21:29:47 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/10 23:33:35 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 # define SMALL_MIN			(TINY_MIN + 1)
 # define SMALL_MAX			(TINY_CHUNK)
-# define SMALL_CHUNK		(TINY_CHUNK * 4)
+# define SMALL_CHUNK		(TINY_CHUNK * 2)
 
 # define LARGE_MIN			(SMALL_MAX + 1)
 # define LARGE_MAX			((unsigned int)-1)
@@ -32,7 +32,7 @@
 # define MAX_SIZE			(4294967296 - sizeof(t_alloc) - sizeof(t_chunk) - 4)
 
 # define MMAP_PROT			PROT_READ | PROT_WRITE
-# define MMAP_FLAG			MAP_ANONYMOUS
+# define MMAP_FLAG			MAP_ANONYMOUS | MAP_PRIVATE
 
 /*
 ** libft?
