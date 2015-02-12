@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 23:33:35 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 13:48:55 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 # define MAX_SIZE			(4294967296 - sizeof(t_alloc) - sizeof(t_chunk) - 4)
 
 # define MMAP_PROT			PROT_READ | PROT_WRITE
-# define MMAP_FLAG			MAP_ANONYMOUS | MAP_PRIVATE
+# define MMAP_FLAG			MAP_ANON | MAP_PRIVATE
 
 /*
 ** libft?
@@ -108,23 +108,28 @@ typedef struct	s_freed
 }				t_freed;
 
 /*
-** internal functions
-*/
-void			search_freed(t_freed *res, size_t size);
-
-size_t			ft_umax(size_t a, size_t b);
-size_t			page_round(size_t size);
-
-int				ft_putstr(const char *str);
-int				ft_putulong(unsigned long long int n);
-int				ft_putexa(unsigned long long int exa);
-
-/*
-** public functions
+** malloc
 */
 void			*malloc(size_t size);
-void			*realloc(void *ptr, size_t size);
+
+int				chunk_search(t_freed *res, size_t size);
+void			search_freed(t_freed *res, size_t size);
+
+/*
+** free
+*/
 void			free(void *ptr);
+
+/*
+** realloc
+*/
+void			*realloc(void *ptr, size_t size);
+
+/*
+** show_alloc_mem
+*/
+void			show_alloc_mem(void);
+void			show_alloc_debug(int flags);
 
 # define DEBUG_CHUNK		BIT(0)
 # define DEBUG_FLAGS		BIT(1) // TODO
@@ -132,7 +137,14 @@ void			free(void *ptr);
 # define DEBUG_FREE			(BIT(3) | DEBUG_CHUNK)
 # define DEBUG_ALL			(-1)
 
-void			show_alloc_debug(int flags);
-void			show_alloc_mem(void);
+int				ft_putstr(const char *str);
+int				ft_putulong(unsigned long long int n);
+int				ft_putexa(unsigned long long int exa);
+
+/*
+** utils
+*/
+size_t			ft_umax(size_t a, size_t b);
+size_t			page_round(size_t size);
 
 #endif

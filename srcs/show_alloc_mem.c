@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 21:02:29 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 23:30:56 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 13:33:10 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static t_ulong	print_chunk(t_chunk *chunk, int flags)
 	}
 	alloc = chunk->first;
 	total = 0;
-	while (alloc != NULL)
+	while (1)
 	{
 		total += print_alloc(alloc, flags);
 		if (alloc->next == 0)

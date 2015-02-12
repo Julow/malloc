@@ -6,46 +6,12 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 13:12:11 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/10 23:29:07 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 13:10:25 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 #include <sys/mman.h>
-
-static int		chunk_search(t_freed *res, size_t size)
-{
-	t_alloc			*all;
-	size_t			tmp;
-	size_t			max_free;
-
-	if (res->chunk->first == NULL)
-	{
-		res->alloc = res->chunk->start;
-		*(res->alloc) = ALLOC(size, 0, 0);
-		res->chunk->first = res->alloc;
-		return (1);
-	}
-	max_free = 0;
-	all = res->chunk->first;
-	while (all->next != 0)
-	{
-		tmp = all->next - all->size;
-		if (tmp >= size)
-		{
-			*INSERT_ALLOC(all) = ALLOC(size, all->size, all->next - all->size);
-			all->next = all->size;
-			NEXT_ALLOC(all)->prev = all->next - all->size;
-			res->chunk->free -= size;
-			return ((res->alloc = INSERT_ALLOC(all)), 1);
-		}
-		if (tmp > max_free)
-			max_free = tmp;
-		all = NEXT_ALLOC(all);
-	}
-	res->chunk->free = max_free;
-	return (0);
-}
 
 static void		chunk_add(t_zone *zone, t_chunk *chunk)
 {
