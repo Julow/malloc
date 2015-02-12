@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 13:48:55 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 18:16:39 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,19 @@
 # define SMALL_CHUNK		(TINY_CHUNK * 2)
 
 # define LARGE_MIN			(SMALL_MAX + 1)
-# define LARGE_MAX			((unsigned int)-1)
+# define LARGE_MAX			((t_uint)-1)
 # define LARGE_CHUNK		(0)
 
 # define ZONE_COUNT			(3)
 
-# define MAX_SIZE			(4294967296 - sizeof(t_alloc) - sizeof(t_chunk) - 4)
+# define MAX_SIZE			(4294967296 - sizeof(t_alloc) - sizeof(t_chunk) - 8)
 
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAG			MAP_ANON | MAP_PRIVATE
+
+typedef unsigned int			t_uint;
+
+typedef unsigned long long int	t_ulong;
 
 /*
 ** libft?
@@ -46,23 +50,23 @@
 
 # define WORD(n)			(((n) + 3) / 4 * 4)
 
-# define TULONG				unsigned long long int
-typedef TULONG	t_ulong;
-# undef TULONG
-
 /*
 ** Before each allocs
+** flags
+**  BIT(0) = free
 ** size is a multiple of 4 and assume the size of the struct
 */
 typedef struct	s_alloc
 {
-	int				nothing;
-	size_t			size;
-	size_t			prev;
-	size_t			next;
+	int				flags;
+	t_uint			size;
+	t_uint			prev;
+	t_uint			next;
 }				t_alloc;
 
 # define ALLOC(s,p,n)		((t_alloc){0, (s), (p), (n)})
+
+# define FLAG_FREE			BIT(0)
 
 # define NEXT_ALLOC(a)		((t_alloc*)(V(a) + (a)->next))
 # define PREV_ALLOC(a)		((t_alloc*)(V(a) - (a)->prev))
@@ -74,12 +78,13 @@ typedef struct	s_alloc
 */
 typedef struct	s_chunk
 {
-	void			*start;
-	size_t			size;
-	size_t			free;
+	t_uint			size;
+	t_uint			free;
 	t_alloc			*first;
 	struct s_chunk	*next;
 }				t_chunk;
+
+# define CHUNK_START(c)		(V(c) + sizeof(t_chunk))
 
 /*
 ** Before each zone
@@ -87,9 +92,9 @@ typedef struct	s_chunk
 typedef struct	s_zone
 {
 	int				nothing;
-	size_t			min;
-	size_t			max;
-	size_t			chunk_size;
+	t_uint			min;
+	t_uint			max;
+	t_uint			chunk_size;
 	t_chunk			*chunk;
 }				t_zone;
 
@@ -97,7 +102,7 @@ typedef struct	s_env
 {
 	t_zone			zone[ZONE_COUNT];
 	void			*last_map;
-	size_t			page_size;
+	t_uint			page_size;
 }				t_env;
 
 typedef struct	s_freed
@@ -112,12 +117,14 @@ typedef struct	s_freed
 */
 void			*malloc(size_t size);
 
-int				chunk_search(t_freed *res, size_t size);
-void			search_freed(t_freed *res, size_t size);
+int				chunk_search(t_freed *res, t_uint size);
+void			search_freed(t_freed *res, t_uint size);
 
 /*
 ** free
 */
+int				search_alloc(t_freed *res, void *ptr);
+
 void			free(void *ptr);
 
 /*
@@ -132,7 +139,7 @@ void			show_alloc_mem(void);
 void			show_alloc_debug(int flags);
 
 # define DEBUG_CHUNK		BIT(0)
-# define DEBUG_FLAGS		BIT(1) // TODO
+# define DEBUG_FLAGS		BIT(1)
 # define DEBUG_INFO			BIT(2)
 # define DEBUG_FREE			(BIT(3) | DEBUG_CHUNK)
 # define DEBUG_ALL			(-1)
@@ -144,7 +151,7 @@ int				ft_putexa(unsigned long long int exa);
 /*
 ** utils
 */
-size_t			ft_umax(size_t a, size_t b);
-size_t			page_round(size_t size);
+t_uint			ft_umax(t_uint a, t_uint b);
+t_uint			page_round(t_uint size);
 
 #endif

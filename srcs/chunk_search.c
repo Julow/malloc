@@ -6,52 +6,55 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/12 13:10:16 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 13:47:20 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 18:48:29 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-static int		insert_alloc(t_freed *res, t_alloc *prev, size_t size)
+static int		insert_alloc(t_freed *res, t_alloc *prev, t_uint size)
 {
 	res->alloc = INSERT_ALLOC(prev);
 	*(res->alloc) = ALLOC(size, prev->size, prev->next);
 	if (prev->next != 0)
 		res->alloc->next -= V(NEXT_ALLOC(prev)) - V(res->alloc);
 	prev->next = V(res->alloc) - V(prev);
+	res->chunk->free -= size;
 	return (1);
 }
 
-static int		chunk_first(t_freed *res, size_t size)
+static int		reuse_alloc(t_freed *res, t_alloc *all, t_uint size)
 {
-	res->alloc = res->chunk->start;
+	res->alloc = all;
+	all->size = size;
+	return (1);
+}
+
+static int		chunk_first(t_freed *res, t_uint size)
+{
+	res->alloc = CHUNK_START(res->chunk);
 	*(res->alloc) = ALLOC(size, 0, 0);
 	res->chunk->first = res->alloc;
 	return (1);
 }
 
-static int		chunk_end(t_freed *res, t_alloc *last, size_t size)
+static int		chunk_end(t_freed *res, t_alloc *last, t_uint size)
 {
-	size_t			max_free;
+	t_uint			max_free;
 
-	max_free = res->chunk->size - (V(last) - res->chunk->start);
-	if (max_free >= size)
-	{
-		max_free -= size;
-		if (max_free > res->chunk->free)
-			res->chunk->free = max_free;
-		return (insert_alloc(res, last, size));
-	}
+	max_free = res->chunk->size - (V(last) + last->size - V(res->chunk));
 	if (max_free > res->chunk->free)
 		res->chunk->free = max_free;
+	if (max_free >= size)
+		return (insert_alloc(res, last, size));
 	return (0);
 }
 
-int				chunk_search(t_freed *res, size_t size)
+int				chunk_search(t_freed *res, t_uint size)
 {
 	t_alloc			*all;
-	size_t			tmp;
-	size_t			max_free;
+	t_uint			tmp;
+	t_uint			max_free;
 
 	if (res->chunk->first == NULL)
 		return (chunk_first(res, size));
@@ -60,11 +63,10 @@ int				chunk_search(t_freed *res, size_t size)
 	while (all->next != 0)
 	{
 		tmp = all->next - all->size;
+		if (MASK(all->flags, FLAG_FREE) && (tmp + all->size) >= size)
+			return ((res->chunk->free -= tmp), reuse_alloc(res, all, size));
 		if (tmp >= size)
-		{
-			res->chunk->free -= size;
 			return (insert_alloc(res, all, size));
-		}
 		if (tmp > max_free)
 			max_free = tmp;
 		all = NEXT_ALLOC(all);

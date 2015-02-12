@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 21:02:29 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 13:33:10 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 18:18:04 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static t_ulong	print_chunk(t_chunk *chunk, int flags)
 	if (MASK(flags, DEBUG_CHUNK))
 	{
 		ft_putstr("chunk ");
-		ft_putexa((t_ulong)chunk->start);
+		ft_putexa((t_ulong)CHUNK_START(chunk));
 		ft_putstr(" : ");
 		ft_putulong((t_ulong)chunk->size);
 		while (MASK(flags, DEBUG_FREE) && ft_putstr(" (")

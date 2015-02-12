@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 13:12:11 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 13:10:25 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 18:13:35 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ static void		chunk_add(t_zone *zone, t_chunk *chunk)
 	tmp->next = chunk;
 }
 
-static int		chunk_create(t_freed *res, size_t size)
+static int		chunk_create(t_freed *res, t_uint size)
 {
 	extern t_env	g_env;
-	size_t			chunk_size;
+	t_uint			chunk_size;
 
-	chunk_size = ft_umax(WORD(size + sizeof(t_chunk)), res->zone->chunk_size);
-	if ((g_env.last_map = mmap(g_env.last_map, page_round(chunk_size),
+	chunk_size = page_round(ft_umax(WORD(size + sizeof(t_chunk)),
+		res->zone->chunk_size));
+	if ((g_env.last_map = mmap(g_env.last_map, chunk_size,
 		MMAP_PROT, MMAP_FLAG, -1, 0)) == MAP_FAILED)
 		g_env.last_map = NULL;
 	if ((res->chunk = g_env.last_map) != NULL)
 	{
-		res->chunk->start = V(res->chunk) + sizeof(t_chunk);
-		res->chunk->size = V(res->chunk) + chunk_size - res->chunk->start;
+		res->chunk->size = chunk_size - sizeof(t_chunk);
 		res->chunk->free = res->chunk->size;
 		res->chunk->first = NULL;
 		res->chunk->next = NULL;
@@ -50,7 +50,7 @@ static int		chunk_create(t_freed *res, size_t size)
 	return (1);
 }
 
-static int		zone_search(t_freed *res, size_t size)
+static int		zone_search(t_freed *res, t_uint size)
 {
 	if ((res->zone->chunk_size - sizeof(t_alloc)) <= size)
 		return (chunk_create(res, size));
@@ -64,7 +64,7 @@ static int		zone_search(t_freed *res, size_t size)
 	return (chunk_create(res, size));
 }
 
-void			search_freed(t_freed *res, size_t size)
+void			search_freed(t_freed *res, t_uint size)
 {
 	extern t_env	g_env;
 	int				i;

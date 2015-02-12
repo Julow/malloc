@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:19:07 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 13:35:39 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/12 17:54:01 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void			*malloc(size_t size)
 	if (size > MAX_SIZE)
 		return (NULL);
 	size = WORD(size + sizeof(t_alloc));
-	search_freed(&freed, size);
+	search_freed(&freed, (t_uint)size);
 	if (freed.alloc != NULL)
 		return (V(freed.alloc) + sizeof(t_alloc));
 	return (NULL);
