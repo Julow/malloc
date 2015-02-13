@@ -6,13 +6,13 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 21:02:29 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 18:18:04 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 18:17:37 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-static t_ulong	print_alloc(t_alloc *alloc, int flags)
+static t_ulong	print_alloc(t_alloc *alloc)
 {
 	t_ulong			size;
 
@@ -23,7 +23,6 @@ static t_ulong	print_alloc(t_alloc *alloc, int flags)
 	ft_putstr(" : ");
 	ft_putulong(size);
 	ft_putstr(" octets\n");
-	(void)flags;
 	return (size);
 }
 
@@ -38,14 +37,14 @@ static t_ulong	print_chunk(t_chunk *chunk, int flags)
 		ft_putexa((t_ulong)CHUNK_START(chunk));
 		ft_putstr(" : ");
 		ft_putulong((t_ulong)chunk->size);
-		while (MASK(flags, DEBUG_FREE) && ft_putstr(" (")
+		while (MASK(flags, DEBUG_INFO) && ft_putstr(" (")
 			&& ft_putulong((t_ulong)chunk->free) && ft_putstr(" free)\n") && 0);
 	}
 	alloc = chunk->first;
 	total = 0;
-	while (1)
+	while (alloc != NULL)
 	{
-		total += print_alloc(alloc, flags);
+		total += print_alloc(alloc);
 		if (alloc->next == 0)
 			break ;
 		alloc = NEXT_ALLOC(alloc);

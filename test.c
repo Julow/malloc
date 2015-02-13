@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/20 14:42:30 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 18:33:17 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 18:19:49 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,14 @@ static void		test_loop(int size, int loop)
 {
 	void			*ptr;
 
+	if ((malloc(size)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(size)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(size)) == NULL)
+		PRINT("(null)\n");
+	if ((malloc(size)) == NULL)
+		PRINT("(null)\n");
 	PRINT("malloc (%d), free x %d... ", size, loop);
 	while (loop > 0)
 	{

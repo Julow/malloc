@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 13:12:11 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 18:13:35 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 18:28:06 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ static void		chunk_add(t_zone *zone, t_chunk *chunk)
 	tmp = zone->chunk;
 	if (tmp == NULL)
 	{
+		chunk->prev = NULL;
 		zone->chunk = chunk;
 		return ;
 	}
 	while (tmp->next != NULL)
 		tmp = tmp->next;
 	tmp->next = chunk;
+	chunk->prev = tmp;
 }
 
 static int		chunk_create(t_freed *res, t_uint size)

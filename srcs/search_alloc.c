@@ -6,13 +6,13 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/12 14:56:38 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 18:16:27 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 17:32:05 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-static int		search_chunk(t_freed *res, void *ptr)
+static int		search_in_chunk(t_freed *res, void *ptr)
 {
 	t_alloc			*all;
 
@@ -29,18 +29,18 @@ static int		search_chunk(t_freed *res, void *ptr)
 	}
 }
 
-static int		search_zone(t_freed *res, void *ptr)
+static int		search_in_zone(t_freed *res, void *ptr)
 {
 	t_chunk			*chunk;
 
 	chunk = res->zone->chunk;
-	while (res->chunk != NULL)
+	while (chunk != NULL)
 	{
 		if (ptr >= CHUNK_START(chunk)
 			&& ptr <= (CHUNK_START(chunk) + chunk->size))
 		{
 			res->chunk = chunk;
-			if (search_chunk(res, ptr))
+			if (search_in_chunk(res, ptr))
 				return (1);
 		}
 		chunk = chunk->next;
@@ -58,7 +58,7 @@ int				search_alloc(t_freed *res, void *ptr)
 	while (++i < ZONE_COUNT)
 	{
 		res->zone = &(g_env.zone[i]);
-		if (search_zone(res, ptr))
+		if (search_in_zone(res, ptr))
 			return (1);
 	}
 	res->zone = NULL;

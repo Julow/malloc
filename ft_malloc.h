@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 18:16:39 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 18:26:19 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 
 # include <stddef.h>
 
-# define TINY_MIN			(1)
-# define TINY_MAX			(192)
-# define TINY_CHUNK			(4096)
+# define TINY_MIN			(MIN_SIZE)
+# define TINY_MAX			(1024)
+# define TINY_CHUNK			(1024 * 32)
 
 # define SMALL_MIN			(TINY_MIN + 1)
-# define SMALL_MAX			(TINY_CHUNK)
-# define SMALL_CHUNK		(TINY_CHUNK * 2)
+# define SMALL_MAX			(1024 * 128)
+# define SMALL_CHUNK		(1024 * 1024)
 
 # define LARGE_MIN			(SMALL_MAX + 1)
 # define LARGE_MAX			((t_uint)-1)
@@ -29,7 +29,8 @@
 
 # define ZONE_COUNT			(3)
 
-# define MAX_SIZE			(4294967296 - sizeof(t_alloc) - sizeof(t_chunk) - 8)
+# define MIN_SIZE			(1)
+# define MAX_SIZE			(LARGE_MAX - sizeof(t_alloc) - sizeof(t_chunk) - 8)
 
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAG			MAP_ANON | MAP_PRIVATE
@@ -66,8 +67,6 @@ typedef struct	s_alloc
 
 # define ALLOC(s,p,n)		((t_alloc){0, (s), (p), (n)})
 
-# define FLAG_FREE			BIT(0)
-
 # define NEXT_ALLOC(a)		((t_alloc*)(V(a) + (a)->next))
 # define PREV_ALLOC(a)		((t_alloc*)(V(a) - (a)->prev))
 # define INSERT_ALLOC(a)	((t_alloc*)(V(a) + (a)->size))
@@ -82,6 +81,7 @@ typedef struct	s_chunk
 	t_uint			free;
 	t_alloc			*first;
 	struct s_chunk	*next;
+	struct s_chunk	*prev;
 }				t_chunk;
 
 # define CHUNK_START(c)		(V(c) + sizeof(t_chunk))

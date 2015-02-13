@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/12 13:10:16 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/12 18:48:29 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 18:16:39 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,6 @@ static int		insert_alloc(t_freed *res, t_alloc *prev, t_uint size)
 		res->alloc->next -= V(NEXT_ALLOC(prev)) - V(res->alloc);
 	prev->next = V(res->alloc) - V(prev);
 	res->chunk->free -= size;
-	return (1);
-}
-
-static int		reuse_alloc(t_freed *res, t_alloc *all, t_uint size)
-{
-	res->alloc = all;
-	all->size = size;
 	return (1);
 }
 
@@ -63,8 +56,6 @@ int				chunk_search(t_freed *res, t_uint size)
 	while (all->next != 0)
 	{
 		tmp = all->next - all->size;
-		if (MASK(all->flags, FLAG_FREE) && (tmp + all->size) >= size)
-			return ((res->chunk->free -= tmp), reuse_alloc(res, all, size));
 		if (tmp >= size)
 			return (insert_alloc(res, all, size));
 		if (tmp > max_free)
