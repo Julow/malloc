@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 21:02:29 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/13 18:17:37 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 23:55:11 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static t_ulong	print_alloc(t_alloc *alloc)
 	t_ulong			size;
 
 	size = alloc->size - sizeof(t_alloc);
-	ft_putexa((t_ulong)(V(alloc) + sizeof(t_alloc)));
+	ft_putexa((t_ulong)(MEM_ALLOC(alloc)));
 	ft_putstr(" - ");
 	ft_putexa((t_ulong)INSERT_ALLOC(alloc));
 	ft_putstr(" : ");

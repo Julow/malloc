@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:18:39 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/13 18:26:19 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/14 00:00:10 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ typedef unsigned long long int	t_ulong;
 ** libft?
 ** # define ARRAY(l,v)			{[0 ... ((l) - 1)] = v}
 */
+# define MIN(a,b)			(((a) > (b)) ? (b) : (a))
+
 # define MASK(f,m)			((m) == ((f) & (m)))
 # define ISBIT(f,b)			(((f) & (1 << (b))) != 0)
 # define BIT(b)				(1 << (b))
@@ -53,8 +55,6 @@ typedef unsigned long long int	t_ulong;
 
 /*
 ** Before each allocs
-** flags
-**  BIT(0) = free
 ** size is a multiple of 4 and assume the size of the struct
 */
 typedef struct	s_alloc
@@ -66,6 +66,8 @@ typedef struct	s_alloc
 }				t_alloc;
 
 # define ALLOC(s,p,n)		((t_alloc){0, (s), (p), (n)})
+
+# define MEM_ALLOC(a)		(V(a) + sizeof(t_alloc))
 
 # define NEXT_ALLOC(a)		((t_alloc*)(V(a) + (a)->next))
 # define PREV_ALLOC(a)		((t_alloc*)(V(a) - (a)->prev))
@@ -85,6 +87,7 @@ typedef struct	s_chunk
 }				t_chunk;
 
 # define CHUNK_START(c)		(V(c) + sizeof(t_chunk))
+# define CHUNK_END(c)		(CHUNK_START(c) + (c)->size)
 
 /*
 ** Before each zone
@@ -125,6 +128,7 @@ void			search_freed(t_freed *res, t_uint size);
 */
 int				search_alloc(t_freed *res, void *ptr);
 
+void			free_alloc(t_freed *res);
 void			free(void *ptr);
 
 /*
@@ -153,5 +157,8 @@ int				ft_putexa(unsigned long long int exa);
 */
 t_uint			ft_umax(t_uint a, t_uint b);
 t_uint			page_round(t_uint size);
+
+void			ft_memcpy(void *dst, const void *src, t_uint len);
+void			ft_memmove(void *dst, const void *src, t_uint len);
 
 #endif

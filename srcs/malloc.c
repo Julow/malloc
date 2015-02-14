@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/09 16:19:07 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/13 18:07:20 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/14 00:00:37 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ void			*malloc(size_t size)
 	size = WORD(size + sizeof(t_alloc));
 	search_freed(&freed, (t_uint)size);
 	if (freed.alloc != NULL)
-		return (V(freed.alloc) + sizeof(t_alloc));
+		return (MEM_ALLOC(freed.alloc));
 	return (NULL);
 }

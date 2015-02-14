@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 23:16:33 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/13 18:34:40 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/13 23:55:43 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,24 @@ static void		remove_chunk(t_freed *res)
 	munmap(res->chunk, res->chunk->size + sizeof(t_chunk));
 }
 
+void			free_alloc(t_freed *res)
+{
+	if (res->alloc == res->chunk->first)
+		res->chunk->first = (res->alloc->next) ? NEXT_ALLOC(res->alloc) : NULL;
+	else
+	{
+		PREV_ALLOC(res->alloc)->next += res->alloc->next;
+		NEXT_ALLOC(res->alloc)->prev += res->alloc->prev;
+	}
+	if (res->chunk != res->zone->chunk || res->zone->chunk_size == 0)
+		remove_chunk(res);
+}
+
 void			free(void *ptr)
 {
 	t_freed			res;
 
 	if (!search_alloc(&res, ptr))
 		return ;
-	if (res.alloc == res.chunk->first)
-		res.chunk->first = (res.alloc->next) ? NEXT_ALLOC(res.alloc) : NULL;
-	else
-	{
-		PREV_ALLOC(res.alloc)->next += res.alloc->next;
-		NEXT_ALLOC(res.alloc)->prev += res.alloc->prev;
-	}
-	if (res.chunk != res.zone->chunk || res.zone->chunk_size == 0)
-		remove_chunk(&res);
+	free_alloc(&res);
 }
