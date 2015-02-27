@@ -6,7 +6,7 @@
 #    By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/01/20 14:01:05 by jaguillo          #+#    #+#              #
-#    Updated: 2015/02/10 20:52:51 by jaguillo         ###   ########.fr        #
+#    Updated: 2015/02/27 15:11:50 by jaguillo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,7 @@ re: fclean all
 rebug: fclean debug
 
 $(TEST): all
-	@gcc test.c $(O_FILES) -g -o $@ && printf "\033[0;32m" || printf "\033[0;31m"
+	@gcc test.c $(O_FILES) -D FT_MALLOC -g -o $@ && printf "\033[0;32m" || printf "\033[0;31m"
 	@printf "%-34s \033[1;30m<<--\033[0;0m\n" "$@"
 
 _debug:

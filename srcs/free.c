@@ -6,7 +6,7 @@
 /*   By: jaguillo <jaguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/10 23:16:33 by jaguillo          #+#    #+#             */
-/*   Updated: 2015/02/13 23:55:43 by jaguillo         ###   ########.fr       */
+/*   Updated: 2015/02/27 15:04:12 by jaguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static void		remove_chunk(t_freed *res)
 		res->zone->chunk = NULL;
 	else
 		res->chunk->prev->next = res->chunk->next;
+	if (res->chunk->next != NULL)
+		res->chunk->next->prev = res->chunk->prev;
 	munmap(res->chunk, res->chunk->size + sizeof(t_chunk));
 }
 
